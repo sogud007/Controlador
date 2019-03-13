@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/billing.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <title>AC ERP PH - Billings</title>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="menu">
+            <h1 class="logo">AC ERP PH</h1>
+            <a href="{% url 'logout' %}">
+                <img border="0" src="{% static 'images/logout.png' %}">
+            </a>
+        </nav>
+
+        <aside class="barMenu">
+            <ul class="menuOptions">
+                <li><a href="{% url 'home' %}"><i class="fas fa-money-bill"></i>Home</a></li>
+                <li><a href=""><i class="fas fa-money-bill"></i></a>Billing</li>
+                <li><a href=""><i class="fas fa-money-bill"></i></a>Accounts</li>
+                <li><a href=""><i class="fas fa-money-bill"></i></a>Unities</li>
+                <li><a href=""><i class="fas fa-money-bill"></i></a>Other</li>
+            </ul>
+        </aside>
+
+        <article class="content">
+            <table class="billing">
+                <thead>
+                    <tr>
+                        <th>Consecutivo</th>
+                        <th>Periodo</th>
+                        <th>Fecha Inicial</th>
+                        <th>Fecha Final</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cuenta in cuentas %}
+                        <tr>
+                            <td>{{cuenta.CONSECUTIVO}}</td>
+                            <td>{{cuenta.PERIODO}}</td>
+                            <td>{{cuenta.PERIODO_COBRO.FECHA_INICIAL}}</td>
+                            <td>{{cuenta.PERIODO_COBRO.FECHA_FINAL}}</td>
+                            <td>{{cuenta.VALOR_TOTAL}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
+    </div>
+</body>
+</html>

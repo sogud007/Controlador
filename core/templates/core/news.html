@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <title>AC ERP PH - Home</title>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="menu">
+            <h1 class="logo">AC ERP PH</h1>
+            <a href="{% url 'logout' %}">
+                <img border="0" src="{% static 'images/logout.png' %}">
+            </a>
+        </nav>
+
+        <aside class="barMenu">
+            <ul class="menuOptions">
+                <li><a href="{% url 'home' %}"><i class="fas fa-money-bill"></i>Home</a></li>
+                <li><a href="{% url 'billing' %}"><i class="fas fa-money-bill"></i>Billing</a></li>
+                <li><a href=""><i class="fas fa-money-bill"></i></a>Accounts</li>
+                <li><a href=""><i class="fas fa-money-bill"></i></a>Unities</li>
+                <li><a href=""><i class="fas fa-money-bill"></i></a>Other</li>
+            </ul>
+        </aside>
+
+        <article class="content">
+            <img src="{% static 'images/news1.png' %}" class="newsDetail">
+            <h1 class="title">{{request.session.propiedad.RAZON_SOCIAL}}</h1>
+            <p class="newsInfo"> {{request.session.propiedad.DESCRIPCION}} </p>
+        </article>
+
+        <aside class="details">
+                <h1 class="title">Noticias</h1>
+                <p class="description">A continuación se detallan las noticias de la Propiedad Horizontal.</p>
+                <ul class="listNews">
+                    {% for noticia in request.session.noticias %}
+                        <li>
+                            <h4 class="newsTitle">{{noticia.TITULO}}</h4>
+                            <p class="newsResume">{{noticia.MENSAJE}}</p>
+                            <a href="" class="newsLink"></a>
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+        </aside>
+    </div>
+</body>
+</html>

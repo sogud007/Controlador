@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AC ERP PH</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+</head>
+<body>
+    <div class="wrapper">
+        <form class="loginCard" method="POST" action="{% url 'home'%}">
+            {% csrf_token %}
+            <div class="title">
+                <h1>AC ERP PH</h1>
+            </div>
+            <input type="text" name="userName" id="userName" class="inputsLogin" placeholder="Usuario">
+            <input type="password" name="password" id="password" class="inputsLogin" placeholder="Contraseña">
+            {% if mensaje %}
+                <p><strong>{{ mensaje.mensaje }}</strong>.</p>
+            {% endif %}
+            <button id="login" type="submit">Ingresar</button>
+            <button id="facebook" href="" class="socialNetwotks">
+                <i class="fa fa-facebook"></i>Facebook
+            </button> 
+            <button id="google" href="" class="socialNetwotks">
+                <i class="fa fa-google"></i>Google
+            </button>            
+        </form>
+    </div>
+</body>
+</html>

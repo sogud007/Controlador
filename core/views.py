@@ -2,49 +2,57 @@ from django.shortcuts import render
 from django.conf import settings
 from github import Github, GithubException
 import requests
+import core.functions
+import json
+
+def index(request):
+    return render(request, 'core/index.html')
+
+def logout(request):
+    if "user" in request.session:
+        request.session['login'] = False        
+        del request.session['user']
+        del request.session['propiedad']
+        del request.session['noticias']
+    return render(request, 'core/index.html')
 
 def home(request):
-    ip_address = request.META.get('HTTP_X_FORWARDED_FOR', '')
-    response = requests.get('http://freegeoip.net/json/%s' % ip_address)
-    geodata = response.json()
-    print(geodata)
-    return render(request, 'core/home.html', {
-        'ip': geodata['ip'],
-        'country': geodata['country_name'],
-        'latitude': geodata['latitude'],
-        'longitude': geodata['longitude'],
-        'api_key': settings.GOOGLE_MAPS_API_KEY,
-    })
+    if(request.session['login']):
+        return render(request, 'core/news.html') 
+    else:
+        mensaje = {}
+        mensaje['mensaje'] = 'Login Incorrecto!'
+        request.session['login'] = False
+        if request.method == 'POST':
+            if ('userName' in request.POST):
+                username = request.POST['userName']
+                password = request.POST['password']
+                url = "http://127.0.0.1:8000/Usuario/api/"
+                response = requests.get(url)
+                user = response.json()
+                for u in user:
+                    if (u['CORREO'] == username):
+                        if (u['PASSWORD'] == password):
+                            request.session['login'] = True
+                            request.session['user'] = u
+                            print (u)
+                            unidad = u['ASIGNACION_UP'][0]['UNIDAD']
+                            propiedad_id = core.functions.extractId(unidad['PROPIEDAD_ID'])         
+                            propiedad = core.functions.getPropiedadHorizontal(propiedad_id)
+                            request.session['propiedad'] = propiedad
+                            noticias = core.functions.getNoticias(propiedad_id)
+                            request.session['noticias'] = noticias
+                            return render(request, 'core/news.html', {'usuario': u})    
+                        else:
+                            mensaje['mensaje'] = 'Contraseña Incorrecta'
+                            return render(request, 'core/index.html', {'mensaje': mensaje})                    
+                mensaje['mensaje'] = 'Usuario No Valido'
+        return render(request, 'core/index.html', {'mensaje': mensaje})
+    
 
-def github(request):
-    user = {}
-    if 'username' in request.GET:
-        username = request.GET['username']
-        url = 'https://api.github.com/users/%s' % username
-        response = requests.get(url)
-        user = response.json()
-    return render(request, 'core/github.html', {'user': user})
-
-def github_client(request):
-    search_result = {}
-    if 'username' in request.GET:
-        username = request.GET['username']
-        client = Github()
-
-        try:
-            user = client.get_user(username)
-            search_result['name'] = user.name
-            search_result['login'] = user.login
-            search_result['public_repos'] = user.public_repos
-            search_result['success'] = True
-        except GithubException as ge:
-            search_result['message'] = ge.data['message']
-            search_result['success'] = False
-
-        rate_limit = client.get_rate_limit()
-        search_result['rate'] = {
-            'limit': rate_limit.rate.limit,
-            'remaining': rate_limit.rate.remaining,
-        }
-
-    return render(request, 'core/github.html', {'search_result': search_result})
+def billing(request):
+    user = request.session['user']
+    unidad = user['ASIGNACION_UP'][0]['UNIDAD']
+    unidad_id = core.functions.extractId(unidad['UNIDAD_PRIVADA_ID'])
+    cuentas = core.functions.getCuentasCobro(unidad_id)    
+    return render(request, 'core/billing.html', {'cuentas': cuentas})

@@ -125,6 +125,8 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+
 IPSTACK_API_KEY = config('IPSTACK_API_KEY', default='')
 
 GOOGLE_MAPS_API_KEY = config('GOOGLE_MAPS_API_KEY', default='')
